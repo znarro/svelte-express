@@ -15,7 +15,7 @@
 </script>
 
 <main>
-  <h1>Hello {name}!</h1>
+  <h1>Giphy search!</h1>
   <div class="search-block">
     <input type="text" placeholder="Search for gif" bind:value={searchTerm} />
     <button on:click={searchForGif}>Search</button>

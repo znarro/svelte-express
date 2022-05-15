@@ -16,7 +16,7 @@ app.get("/giphy", (req, res) => {
 
   axios
     .get(`https://api.giphy.com/v1/gifs/search?q=${params}`)
-    .then((res) => {
+    .then((response) => {
       res.send({
         success: true,
         data: response.data.data,
