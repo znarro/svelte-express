@@ -5,8 +5,16 @@ const cors = require("cors");
 const path = require("path");
 
 app.use(cors());
-app.use(express.static("public"));
 
+app.get("/giphy", (req, res) => {
+  console.log(`Searching for a gif with the term: ${req.query.term}`);
+  res.send({
+    success: true,
+    data: [],
+  });
+});
+
+app.use(express.static("public"));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
