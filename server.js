@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -7,27 +8,36 @@ const axios = require("axios");
 
 app.use(cors());
 
-app.get("/giphy", (req, res) => {
+app.get("/giphy", async (req, res, next) => {
   console.log(`Searching for a gif with the term: ${req.query.term}`);
 
-  let params = req.query.term.replace(/ /g, "+");
-  params += "&api_key=CkSfNBxJPlR95jPgpMRJfOCFh0VWpV24";
-  params += "&limit=10";
+  try {
+    if (!process.env.GIPHY_API_KEY) {
+      throw new Error("You forgot to set GIPHY_API_KEY");
+    }
 
-  axios
-    .get(`https://api.giphy.com/v1/gifs/search?q=${params}`)
-    .then((response) => {
+    let params = req.query.term.replace(/ /g, "+");
+    params += `&api_key=${process.env.GIPHY_API_KEY}`;
+    params += "&limit=10";
+
+    let response = await axios.get(
+      `https://api.giphy.com/v1/gifs/search?q=${params}`
+    );
+
+    if (response.status === 200) {
       res.send({
         success: true,
         data: response.data.data,
       });
-    })
-    .catch((error) => {
+    } else {
       res.send({
         success: false,
         data: [],
       });
-    });
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use(express.static("public"));
